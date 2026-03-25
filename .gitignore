@@ -10,6 +10,7 @@ __pycache__/
 # Données scrappées
 *.csv
 *.json
+*images/
 
 # Logs
 *.log

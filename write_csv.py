@@ -1,14 +1,12 @@
 import csv
-import re
+from utils import clean_filename
 
 
 def write_csv(books: list[dict[str, str | int]]) -> None:
     if not books:
         return
 
-    category = str(books[0]["category"])
-    category_clean = re.sub(r"[^\w\s-]", "", category).strip().replace(" ", "_").lower()
-    filename = f"{category_clean}.csv"
+    filename = clean_filename(str(books[0]["category"])) + ".csv"
 
     col = [
         "product_page_url", "universal_product_code", "title", "price_including_tax",
