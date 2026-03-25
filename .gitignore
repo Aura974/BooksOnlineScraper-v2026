@@ -1,0 +1,28 @@
+# Environnement virtuel
+.venv/
+env/
+
+# Cache Python
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Données scrappées
+*.csv
+*.json
+
+# Logs
+*.log
+
+# Variables d'environnement (clés API, identifiants…)
+.env
+
+# IDE
+.vscode/
+.idea/
+*.DS_Store
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
