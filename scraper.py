@@ -43,7 +43,7 @@ def get_books_urls(category_url: str) -> list[str]:
             next_a = next_btn.find("a")
             if next_a:
                 next_href = str(next_a.get("href", ""))
-                # Construire l'URL de la page suivante
+                # construct URL for next page
                 current_url = current_url.rsplit("/", 1)[0] + "/" + next_href
         else:
             break
