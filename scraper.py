@@ -3,8 +3,45 @@ from bs4 import BeautifulSoup
 import re
 
 
-def scrape_book(url: str) -> dict[str, str | int]:
-    response = requests.get(url)
+def scrape_site(url: str) -> list[str]:
+    return []
+
+
+def scrape_all_books(category_url: str) -> list[str]:
+    urls: list[str] = []
+    base_url = "https://books.toscrape.com/catalogue/"
+    current_url = category_url
+
+    while True:
+        response = requests.get(current_url)
+        response.encoding = "utf-8"
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # get all urls
+        for article in soup.find_all("article", class_="product_pod"):
+            a_tag = article.find("a")
+            if a_tag:
+                href = str(a_tag.get("href", ""))
+                # reconstruct urls
+                clean = href.replace("../", "")
+                urls.append(base_url + clean)
+
+        # check for "next" button
+        next_btn = soup.find("li", class_="next")
+        if next_btn:
+            next_a = next_btn.find("a")
+            if next_a:
+                next_href = str(next_a.get("href", ""))
+                # Construire l'URL de la page suivante
+                current_url = current_url.rsplit("/", 1)[0] + "/" + next_href
+        else:
+            break
+
+    return urls
+
+
+def scrape_one_book(book_url: str) -> dict[str, str | int]:
+    response = requests.get(book_url)
     response.encoding = "utf-8"
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -54,7 +91,7 @@ def scrape_book(url: str) -> dict[str, str | int]:
     stock: int = int(match.group()) if match else 0
 
     return {
-        "product_page_url":       url,
+        "product_page_url":       book_url,
         "title":                  title,
         "price_including_tax":    prod_info.get("Price (incl. tax)", ""),
         "price_excluding_tax":    prod_info.get("Price (excl. tax)", ""),
