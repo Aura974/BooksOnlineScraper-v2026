@@ -3,11 +3,22 @@ from bs4 import BeautifulSoup
 import re
 
 
-def scrape_site(url: str) -> list[str]:
-    return []
+def get_category_urls(url: str) -> list[str]:
+    response = requests.get(url)
+    response.encoding = "utf-8"
+    soup = BeautifulSoup(response.text, "html.parser")
+
+    urls: list[str] = []
+    nav = soup.find("ul", class_="nav-list")
+    if nav:
+        for a_tag in nav.find_all("a"):
+            href = str(a_tag.get("href", ""))
+            urls.append(url + href)
+
+    return urls[1:]
 
 
-def scrape_all_books(category_url: str) -> list[str]:
+def get_books_urls(category_url: str) -> list[str]:
     urls: list[str] = []
     base_url = "https://books.toscrape.com/catalogue/"
     current_url = category_url

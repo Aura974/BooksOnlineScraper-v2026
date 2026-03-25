@@ -1,12 +1,21 @@
-from scraper import scrape_all_books, scrape_one_book
+from scraper import get_category_urls, get_books_urls, scrape_one_book
 from write_csv import write_csv
 
-category_url = "https://books.toscrape.com/catalogue/category/books/mystery_3/index.html"
-urls = scrape_all_books(category_url)
+BASE_URL = "https://books.toscrape.com/"
 
-books: list[dict[str, str | int]] = []
 
-for url in urls:
-    books.append(scrape_one_book(url))
+def main() -> None:
+    category_urls = get_category_urls(BASE_URL)
 
-write_csv(books)
+    for category_url in category_urls:
+        book_urls = get_books_urls(category_url)
+        books: list[dict[str, str | int]] = []
+
+        for book_url in book_urls:
+            books.append(scrape_one_book(book_url))
+
+        write_csv(books)
+
+
+if __name__ == "__main__":
+    main()
